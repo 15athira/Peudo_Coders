@@ -1,10 +1,12 @@
+import 'package:ecosweep/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
-import 'home_page.dart'; // Import the HomePage widget
-import 'login_page.dart'; // Import the LoginPage widget
-import 'register_page.dart'; // Import the RegisterPage widget
+import 'home_page.dart';
+import 'login_page.dart';
+import 'register_page.dart';
+import 'profile_page.dart';
+import 'event_details_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,14 +18,32 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Color(0xFF4CAF50),
+        primarySwatch: Colors.green,
+      ),
+      initialRoute: '/home',
+      onGenerateRoute: (settings) {
+        if (settings.name == '/event-details') {
+          final args = settings.arguments as Map<String, String>;
+          return MaterialPageRoute(
+            builder: (context) => EventDetailsPage(event: args),
+          );
+        }
+        return null;
+      },
       routes: {
-        '/': (context) => LoginPage(), // Use LoginPage as the initial route
-        '/home': (context) => HomePage(), // Define the HomePage route
-        '/register': (context) => RegisterPage(), // Define the RegisterPage route
+        '/login': (context) => LoginPage(),
+        '/home': (context) => HomePage(),
+        '/events': (context) => EventPage(),
+        '/register': (context) => RegisterPage(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
