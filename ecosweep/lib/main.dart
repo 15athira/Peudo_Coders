@@ -7,7 +7,6 @@ import 'login_page.dart';
 import 'register_page.dart';
 import 'profile_page.dart';
 import 'event_details_page.dart';
-import 'package:ecosweep/event_updates_page.dart'; // Import the event updates page
 import 'admin_dashboard.dart'; // Import the AdminDashboard page
 
 void main() async {
@@ -45,8 +44,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/events': (context) => EventPage(),
         '/register': (context) => RegisterPage(),
-        '/profile': (context) => ProfilePage(),
-        '/event-updates': (context) => EventUpdatesPage(), // Define the route
+        '/profile': (context) => ProfilePage(), 
         '/admin-dashboard': (context) => AdminDashboard(), // Add the route
       },
     );

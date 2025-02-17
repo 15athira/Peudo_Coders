@@ -21,16 +21,10 @@ class EventDetailsPage extends StatelessWidget {
               ),
               title: Column(
                 children: [
-                  Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/waste2.webp'),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
+                  Icon(
+                    Icons.event_available,
+                    color: primaryColor,
+                    size: 48,
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -284,10 +278,11 @@ class EventDetailsPage extends StatelessWidget {
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/waste2.webp'),
-                  fit: BoxFit.cover,
-                ),
+              ),
+              child: Icon(
+                Icons.image,
+                size: 100,
+                color: Colors.white.withOpacity(0.7),
               ),
             ),
             Padding(

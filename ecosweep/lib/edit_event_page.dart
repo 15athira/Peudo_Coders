@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CreateEventPage extends StatefulWidget {
-  const CreateEventPage({super.key});
+class EditEventPage extends StatefulWidget {
+  final DocumentSnapshot event;
+  const EditEventPage({super.key, required this.event});
 
   @override
-  _CreateEventPageState createState() => _CreateEventPageState();
+  _EditEventPageState createState() => _EditEventPageState();
 }
 
-class _CreateEventPageState extends State<CreateEventPage> {
+class _EditEventPageState extends State<EditEventPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
@@ -17,10 +18,28 @@ class _CreateEventPageState extends State<CreateEventPage> {
   DateTime? _selectedDate;
   String _errorMessage = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadEventData();
+  }
+
+  void _loadEventData() {
+    final eventData = widget.event.data() as Map<String, dynamic>;
+    _nameController.text = eventData['name'] ?? '';
+    _descriptionController.text = eventData['description'] ?? '';
+    _placeController.text = eventData['place'] ?? '';
+    _locationController.text = eventData['location'] ?? '';
+    _volunteersController.text = eventData['volunteers'] ?? '';
+    _selectedDate = eventData['date'] != null
+        ? (eventData['date'] as Timestamp).toDate()
+        : null;
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
@@ -31,7 +50,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     }
   }
 
-  Future<void> _submitEvent() async {
+  Future<void> _updateEvent() async {
     try {
       if (_selectedDate == null) {
         setState(() {
@@ -40,18 +59,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
         return;
       }
 
-      await FirebaseFirestore.instance.collection('events').add({
+      await FirebaseFirestore.instance
+          .collection('events')
+          .doc(widget.event.id)
+          .update({
         'name': _nameController.text.trim(),
         'description': _descriptionController.text.trim(),
         'place': _placeController.text.trim(),
         'location': _locationController.text.trim(),
         'volunteers': _volunteersController.text.trim(),
         'date': _selectedDate,
-        'createdAt': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Event created successfully'),
+          content: Text('Event updated successfully'),
           backgroundColor: Colors.green,
         ),
       );
@@ -62,7 +83,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to create event: $_errorMessage'),
+          content: Text('Failed to update event: $_errorMessage'),
           backgroundColor: Colors.red,
         ),
       );
@@ -77,7 +98,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Create Event'),
+        title: const Text('Edit Event'),
         backgroundColor: primaryColor,
         iconTheme: const IconThemeData(
             color: Colors.white), // Change arrow color to white
@@ -174,7 +195,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _submitEvent,
+                      onPressed: _updateEvent,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -183,7 +204,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                       ),
                       child: const Text(
-                        'Submit',
+                        'Update',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
