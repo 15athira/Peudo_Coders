@@ -8,6 +8,7 @@ import 'register_page.dart';
 import 'profile_page.dart';
 import 'event_details_page.dart';
 import 'admin_dashboard.dart'; // Import the AdminDashboard page
+import 'event_updates.dart'; // Import the EventUpdatesPage
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,8 +45,11 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/events': (context) => EventPage(),
         '/register': (context) => RegisterPage(),
-        '/profile': (context) => ProfilePage(), 
+        '/profile': (context) => ProfilePage(),
         '/admin-dashboard': (context) => AdminDashboard(), // Add the route
+        '/event-updates': (context) => EventUpdatesPage(
+            event: ModalRoute.of(context)!.settings.arguments
+                as Map<String, String>), // Add the route for EventUpdatesPage
       },
     );
   }

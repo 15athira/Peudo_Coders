@@ -111,53 +111,14 @@ class EventDetailsPage extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: isChecked
-                      ? () async {
-                          try {
-                            final user = FirebaseAuth.instance.currentUser;
-                            if (user == null) {
-                              print('User is not authenticated');
-                              return;
-                            }
-                            print('User ID: ${user.uid}');
-                            await FirebaseFirestore.instance
-                                .collection('event_participants')
-                                .doc('${event['id']}_${user.uid}')
-                                .set({
-                              'eventId': event['id'],
-                              'userId': user.uid,
-                              'joinedAt': FieldValue.serverTimestamp(),
-                            });
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Successfully joined the event!'),
-                                backgroundColor: primaryColor,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
-                            Navigator.pushReplacementNamed(
-                                context, '/event-updates',
-                                arguments: event);
-                          } catch (e) {
-                            print('Error joining event: $e');
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'Failed to join the event. Please try again.'),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      : null,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/event-updates',
+                      arguments: event,
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
@@ -278,11 +239,10 @@ class EventDetailsPage extends StatelessWidget {
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
-              ),
-              child: Icon(
-                Icons.image,
-                size: 100,
-                color: Colors.white.withOpacity(0.7),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/waste2.webp'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
