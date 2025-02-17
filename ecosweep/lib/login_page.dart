@@ -16,14 +16,33 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      // Validate input fields
+      if (_emailController.text.trim().isEmpty ||
+          _passwordController.text.trim().isEmpty) {
+        setState(() {
+          _errorMessage = "All fields are required.";
+        });
+        return;
+      }
+
+      // Check for admin credentials
+      if (_emailController.text.trim() == 'admin@gmail.com' &&
+          _passwordController.text.trim() == '123456') {
+        Navigator.pushReplacementNamed(context, '/admin-dashboard');
+        return;
+      }
+
+      // Sign in with email & password in Firebase Authentication
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
+
+      // Navigate to home screen after successful login
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       setState(() {
-        _errorMessage = 'Invalid email or password';
+        _errorMessage = e.toString();
       });
     }
   }
@@ -193,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           final bool isLoggedIn = snapshot.hasData;
-          
+
           return Container(
             decoration: BoxDecoration(
               boxShadow: [

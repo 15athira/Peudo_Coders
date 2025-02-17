@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EventPage extends StatelessWidget {
+  const EventPage({super.key});
+
  @override
  Widget build(BuildContext context) {
    const primaryColor = Color(0xFF4CAF50);
@@ -53,7 +55,7 @@ class EventPage extends StatelessWidget {
                    ],
                  ),
                  SizedBox(height: 16),
-                 Container(
+                 SizedBox(
                    height: 200,
                    child: ListView.builder(
                      scrollDirection: Axis.horizontal,

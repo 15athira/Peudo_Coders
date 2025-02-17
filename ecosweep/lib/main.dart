@@ -7,6 +7,8 @@ import 'login_page.dart';
 import 'register_page.dart';
 import 'profile_page.dart';
 import 'event_details_page.dart';
+import 'package:ecosweep/event_updates_page.dart'; // Import the event updates page
+import 'admin_dashboard.dart'; // Import the AdminDashboard page
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
         '/events': (context) => EventPage(),
         '/register': (context) => RegisterPage(),
         '/profile': (context) => ProfilePage(),
+        '/event-updates': (context) => EventUpdatesPage(), // Define the route
+        '/admin-dashboard': (context) => AdminDashboard(), // Add the route
       },
     );
   }

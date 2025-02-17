@@ -4,11 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Map<String, String> event;
-  const EventDetailsPage({Key? key, required this.event}) : super(key: key);
+  const EventDetailsPage({super.key, required this.event});
 
   void _showJoinEventDialog(BuildContext context) {
     const primaryColor = Color(0xFF4CAF50);
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -21,10 +21,16 @@ class EventDetailsPage extends StatelessWidget {
               ),
               title: Column(
                 children: [
-                  Icon(
-                    Icons.event_available,
-                    color: primaryColor,
-                    size: 48,
+                  Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/waste2.webp'),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -50,22 +56,26 @@ class EventDetailsPage extends StatelessWidget {
                         children: [
                           _buildGuideline(
                             icon: Icons.access_time,
-                            text: 'Please reach the location at least 1 hour before the event for registration.',
+                            text:
+                                'Please reach the location at least 1 hour before the event for registration.',
                           ),
                           SizedBox(height: 12),
                           _buildGuideline(
                             icon: Icons.people,
-                            text: 'Respect others and follow the event guidelines.',
+                            text:
+                                'Respect others and follow the event guidelines.',
                           ),
                           SizedBox(height: 12),
                           _buildGuideline(
                             icon: Icons.inventory_2,
-                            text: 'Ensure to carry necessary items as mentioned in the event details.',
+                            text:
+                                'Ensure to carry necessary items as mentioned in the event details.',
                           ),
                           SizedBox(height: 12),
                           _buildGuideline(
                             icon: Icons.health_and_safety,
-                            text: 'Follow all safety protocols and instructions provided by the event organizers.',
+                            text:
+                                'Follow all safety protocols and instructions provided by the event organizers.',
                           ),
                         ],
                       ),
@@ -109,26 +119,49 @@ class EventDetailsPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: isChecked
                       ? () async {
-                          final user = FirebaseAuth.instance.currentUser;
-                          await FirebaseFirestore.instance
-                              .collection('event_participants')
-                              .doc('${event['id']}_${user!.uid}')
-                              .set({
-                            'eventId': event['id'],
-                            'userId': user.uid,
-                            'joinedAt': FieldValue.serverTimestamp(),
-                          });
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Successfully joined the event!'),
-                              backgroundColor: primaryColor,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          try {
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user == null) {
+                              print('User is not authenticated');
+                              return;
+                            }
+                            print('User ID: ${user.uid}');
+                            await FirebaseFirestore.instance
+                                .collection('event_participants')
+                                .doc('${event['id']}_${user.uid}')
+                                .set({
+                              'eventId': event['id'],
+                              'userId': user.uid,
+                              'joinedAt': FieldValue.serverTimestamp(),
+                            });
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Successfully joined the event!'),
+                                backgroundColor: primaryColor,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                            Navigator.pushReplacementNamed(
+                                context, '/event-updates',
+                                arguments: event);
+                          } catch (e) {
+                            print('Error joining event: $e');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Failed to join the event. Please try again.'),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            );
+                          }
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -251,11 +284,10 @@ class EventDetailsPage extends StatelessWidget {
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
-              ),
-              child: Icon(
-                Icons.image,
-                size: 100,
-                color: Colors.white.withOpacity(0.7),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/waste2.webp'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
@@ -272,7 +304,6 @@ class EventDetailsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -315,7 +346,6 @@ class EventDetailsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -370,7 +400,6 @@ class EventDetailsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24),
-
                   Text(
                     'About Event',
                     style: TextStyle(
@@ -389,12 +418,12 @@ class EventDetailsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 30),
-
                   if (!event['title']!.toLowerCase().contains('beach cleanup'))
                     StreamBuilder<DocumentSnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('event_participants')
-                          .doc('${event['id']}_${FirebaseAuth.instance.currentUser?.uid}')
+                          .doc(
+                              '${event['id']}_${FirebaseAuth.instance.currentUser?.uid}')
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data!.exists) {
@@ -403,7 +432,7 @@ class EventDetailsPage extends StatelessWidget {
                             label: Text('View Updates'),
                             onPressed: () {
                               Navigator.pushNamed(
-                                context, 
+                                context,
                                 '/event-updates',
                                 arguments: event,
                               );
