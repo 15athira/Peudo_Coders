@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'user_details_page.dart'; // Import the UserDetailsPage
+import 'volunteer_details_page.dart'; // Import the VolunteerDetailsPage
 
 class VolunteersPage extends StatefulWidget {
   const VolunteersPage({super.key});
@@ -74,13 +74,10 @@ class _VolunteersPageState extends State<VolunteersPage> {
           return ListView.builder(
             itemCount: volunteers.length,
             itemBuilder: (context, index) {
-              final volunteer =
-                  volunteers[index].data() as Map<String, dynamic>;
-              final name =
-                  volunteer.containsKey('name') ? volunteer['name'] : 'No Name';
-              final email = volunteer.containsKey('email')
-                  ? volunteer['email']
-                  : 'No Email';
+              final volunteer = volunteers[index];
+              final volunteerData = volunteer.data() as Map<String, dynamic>;
+              final name = volunteerData['name'] ?? 'No Name';
+              final email = volunteerData['email'] ?? 'No Email';
 
               return ListTile(
                 leading: Icon(Icons.person, color: primaryColor),
@@ -90,7 +87,8 @@ class _VolunteersPageState extends State<VolunteersPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => UserDetailsPage(user: volunteer),
+                      builder: (context) =>
+                          VolunteerDetailsPage(volunteer: volunteer),
                     ),
                   );
                 },
