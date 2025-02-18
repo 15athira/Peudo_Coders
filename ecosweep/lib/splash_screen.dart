@@ -1,4 +1,4 @@
-import 'package:ecosweep/home_page.dart';
+import 'package:EcoSweep/home_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
